@@ -6,8 +6,11 @@ class Controller {
 private:
 	Model* model;
 	View* view;
+
+	std::string input;
 public:
 	Controller(Model*, View*);
 	void processEvents();
-	void processKeyEvent(sf::Event);
+	void processTextEvent(sf::Event);
+	void processInput();
 };

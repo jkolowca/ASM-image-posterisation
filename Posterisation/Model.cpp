@@ -30,7 +30,20 @@ bool Model::loadImage(std::string name) {
 	return true;
 }
 
-void Model::editImage(int) {
+void Model::editImage(int param) {
+	if (param == 0) return;
+	unsigned char* inputImage = originalImage;
+	unsigned short out, in, hpar, par;
+	par = 255 / param;
+	if (par == 0) return;
+	hpar = par / 2;
+
+	for (unsigned int i = 0; i < size; i++) {
+		in = *inputImage++;
+		out = (in + hpar) - (in + hpar) % par;
+		if (out > 255) out = 255;
+		editedImage[i] = out;
+	}
 	return;
 }
 

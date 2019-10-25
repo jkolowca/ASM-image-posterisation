@@ -11,12 +11,14 @@ Controller::Controller(Model* m, View* v) {
 void Controller::processEvents() {
 	sf::RenderWindow* window = view->getWindow();
 
-	int par = 0;
 	while (window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
-			if (event.type == sf::Event::KeyPressed) {
-				processKeyEvent(event);
+			if (event.type == sf::Event::KeyPressed && event.key.code == 58) {
+				processInput();
+			}
+			if (event.type == sf::Event::TextEntered) {
+				processTextEvent(event);
 			}
 			if (event.type == sf::Event::Closed)
 				window->close();
@@ -25,6 +27,12 @@ void Controller::processEvents() {
 	}
 }
 
-void Controller::processKeyEvent(sf::Event) {
+void Controller::processTextEvent(sf::Event e) {
+	input += e.text.unicode;
+}
 
+void Controller::processInput() {
+	model->editImage(std::stoi(input));
+	view->SetSprite(model->getWidth(), model->getHeigth(), model->getImage());
+	input.clear();
 }
