@@ -4,6 +4,8 @@
 Controller::Controller(Model* m, View* v) {
 	model = m;
 	view = v;
+	model->loadImage("pic.bmp");
+	view->SetSprite(model->getWidth(), model->getHeigth(), model->getImage());
 }
 
 void Controller::processEvents() {
@@ -19,6 +21,7 @@ void Controller::processEvents() {
 			if (event.type == sf::Event::Closed)
 				window->close();
 		}
+	view->Display();
 	}
 }
 

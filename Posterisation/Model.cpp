@@ -1,4 +1,6 @@
 #include "Model.h"
+#include <SFML/Graphics.hpp>
+#include <iostream>
 
 Model::Model() {
 	width = heigth = size = 0;
@@ -6,13 +8,25 @@ Model::Model() {
 }
 
 bool Model::loadImage(std::string name) {
-	width = 10;
-	heigth = 10;
+	sf::Image img;
+	if (!img.loadFromFile(name)) {
+		std::cout << "failed loading image";
+		return false;
+	}
+	width = img.getSize().x;
+	heigth = img.getSize().y;
 	size = 4 * width * heigth;
-	delete[] originalImage;
-	delete[] editedImage;
-	originalImage = new unsigned char [size] {1};
-	editedImage = new unsigned char [size] {1};
+
+	originalImage = new unsigned char[size];
+	editedImage = new unsigned char[size];
+
+	const unsigned char* pixptr;
+	pixptr = img.getPixelsPtr();
+
+	for (unsigned int i = 0; i < size; i++) {
+		originalImage[i] = editedImage[i] = *pixptr++;
+	}
+
 	return true;
 }
 
