@@ -1,6 +1,16 @@
+#include "Controller.h"
 #include <iostream>
-#include <Windows.h>
 
+
+int main() {
+	View view;
+	Model model;
+
+	Controller controller(&model, &view);
+	controller.processEvents();
+}
+
+/***************************************************************************
 typedef void (__stdcall *HelloThere)();
 
 int main(int argc, char* argv[]) {
@@ -23,3 +33,4 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+*****************************************************************************/
