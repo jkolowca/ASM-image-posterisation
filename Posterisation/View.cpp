@@ -4,7 +4,7 @@
 #define WINDOWWIDTH 640
 
 View::View() {
-	window = new sf::RenderWindow(sf::VideoMode(WINDOWWIDTH, WINDOWHEIGTH), "Posterize");
+	window = new sf::RenderWindow(sf::VideoMode(WINDOWWIDTH, WINDOWHEIGTH), "Posterise");
 	window->setFramerateLimit(10);
 	image.create(640, 480, sf::Color::Black);
 	texture.loadFromImage(image);

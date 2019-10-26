@@ -13,5 +13,5 @@ public:
 	unsigned int getWidth();
 	unsigned int getHeigth();
 	unsigned int getSize();
-	void editImage(int);
+	void editImage(unsigned int);
 };

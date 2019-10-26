@@ -1,6 +1,9 @@
 #include "Model.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <Windows.h>
+
+typedef void(__stdcall* posterise)(unsigned char*, unsigned char*, unsigned int, unsigned int);
 
 Model::Model() {
 	width = heigth = size = 0;
@@ -30,21 +33,18 @@ bool Model::loadImage(std::string name) {
 	return true;
 }
 
-void Model::editImage(int param) {
+void Model::editImage(unsigned int param) {
 	if (param == 0) return;
-	unsigned char* inputImage = originalImage;
-	unsigned short out, in, hpar, par;
-	par = 255 / param;
-	if (par == 0) return;
-	hpar = par / 2;
 
-	for (unsigned int i = 0; i < size; i++) {
-		in = *inputImage++;
-		out = (in + hpar) - (in + hpar) % par;
-		if (out > 255) out = 255;
-		editedImage[i] = out;
+	HINSTANCE lib = LoadLibrary("CppDll.dll");
+	posterise poster;
+
+	if (lib) {
+		poster = (posterise)GetProcAddress(lib, "posterise");
+		if (poster) {
+			poster(originalImage, editedImage, param, size);
+		}
 	}
-	return;
 }
 
 unsigned char* Model::getImage() {

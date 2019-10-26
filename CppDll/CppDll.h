@@ -8,3 +8,5 @@
 #endif
 
 extern "C" CPPDLL_API void HelloThere();
+
+extern "C" CPPDLL_API void posterise(unsigned char*, unsigned char*, unsigned int, unsigned int);
