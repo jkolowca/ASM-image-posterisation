@@ -32,7 +32,15 @@ void Controller::processTextEvent(sf::Event e) {
 }
 
 void Controller::processInput() {
-	model->editImage(std::stoi(input));
+	int par;
+	try {
+		par = std::stoi(input);
+	}
+	catch (...) {
+		std::cout << "Invalid argument" << std::endl;
+		par = 255;
+	}
+	model->editImage(par);
 	view->SetSprite(model->getWidth(), model->getHeigth(), model->getImage());
 	input.clear();
 }

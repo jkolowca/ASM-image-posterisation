@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <Windows.h>
+#include <thread>
 
 typedef void(__stdcall* posterise)(unsigned char*, unsigned char*, unsigned int, unsigned int);
 
@@ -35,14 +36,20 @@ bool Model::loadImage(std::string name) {
 
 void Model::editImage(unsigned int param) {
 	if (param == 0) return;
-
+	unsigned int threads = std::thread::hardware_concurrency();
 	HINSTANCE lib = LoadLibrary("CppDll.dll");
 	posterise poster;
 
 	if (lib) {
 		poster = (posterise)GetProcAddress(lib, "posterise");
 		if (poster) {
-			poster(originalImage, editedImage, param, size);
+			std::vector<std::thread> thr;
+			for (unsigned int i = 0; i < threads; i++) {
+				thr.push_back(std::thread(poster, originalImage + i * size / threads, editedImage + i * size / threads, param, size / threads));
+			}
+			for (auto iter = thr.begin(); iter != thr.end(); iter++) {
+				iter->join();
+			}
 		}
 	}
 }
