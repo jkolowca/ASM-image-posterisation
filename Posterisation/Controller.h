@@ -1,13 +1,14 @@
 #pragma once
 #include "Model.h"
 #include "View.h"
+#include <sstream>
 
 class Controller {
 private:
 	Model* model;
 	View* view;
 
-	std::string input;
+	std::stringstream userInput;
 public:
 	Controller(Model*, View*);
 	void processEvents();

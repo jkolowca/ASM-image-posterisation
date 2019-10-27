@@ -28,19 +28,22 @@ void Controller::processEvents() {
 }
 
 void Controller::processTextEvent(sf::Event e) {
-	input += e.text.unicode;
+	userInput << (char)e.text.unicode;
 }
 
 void Controller::processInput() {
-	int par;
+	unsigned int par;
+	char lib;
 	try {
-		par = std::stoi(input);
+		userInput >> lib >> par;
+		std::cout << lib << " " << par << std::endl;
 	}
 	catch (...) {
 		std::cout << "Invalid argument" << std::endl;
 		par = 255;
+		lib = 'a';
 	}
-	model->editImage(par);
+	model->editImage(lib, par);
 	view->SetSprite(model->getWidth(), model->getHeigth(), model->getImage());
-	input.clear();
+	userInput.clear();
 }

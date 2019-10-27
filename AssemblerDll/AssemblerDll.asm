@@ -16,6 +16,7 @@ EXTERN MessageBoxA: PROC
 EXTERN GetForegroundWindow: PROC
 
 PUBLIC HelloThere
+PUBLIC posterise
 
 HelloThere PROC
 
@@ -47,6 +48,22 @@ pop		rbp
 ret
 HelloThere ENDP
 
+posterise PROC
+;  Parameters
+;  RCX =>  WORD input array,
+;  RDX =>  WORD output array,
+;  R8  =>  QWORD parameter,
+;  R9  =>  QWORD lenght
+
+push	rbp					; save frame pointer
+mov		rbp, rsp			; fix stack pointer
+
+; epilog. restore stack pointer
+mov		rsp, rbp
+pop		rbp
+ret
+
+posterise ENDP
 
 
 ;-------------------------------------------------------------------------

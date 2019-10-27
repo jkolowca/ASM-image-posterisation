@@ -34,10 +34,19 @@ bool Model::loadImage(std::string name) {
 	return true;
 }
 
-void Model::editImage(unsigned int param) {
+void Model::editImage(char libraryType, unsigned int param) {
 	if (param == 0) return;
+
+	HINSTANCE lib;
+	if (libraryType == 'a') {
+		lib = LoadLibrary("AssemblerDll.dll");
+	}
+	else if (libraryType == 'c') {
+		lib = LoadLibrary("CppDll.dll");
+	}
+	else return;
+
 	unsigned int threads = std::thread::hardware_concurrency();
-	HINSTANCE lib = LoadLibrary("CppDll.dll");
 	posterise poster;
 
 	if (lib) {
