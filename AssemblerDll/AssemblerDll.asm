@@ -1,69 +1,89 @@
-;-------------------------------------------------------------------------
 .data
-;-------------------------------------------------------------------------
 
-hello_msg db "Hello There!", 0
-info_msg  db "Asm", 0
+maxByteVal db  255
+wordCounter dd 32
 
-
-
-
-;-------------------------------------------------------------------------
 .code
-;-------------------------------------------------------------------------
 
-EXTERN MessageBoxA: PROC
-EXTERN GetForegroundWindow: PROC
 
-PUBLIC HelloThere
-PUBLIC posterise
+DllMain PROC		; ENTRY POINT FOR DLL
+	mov rax, 1
+	ret
+DllMain ENDP
 
-HelloThere PROC
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;									INPUT DATA									;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	input - original pixel data array											;
+;	output - processed pixel data array											;
+;	parameter - number of colors to be left in image							;
+;	size - length of pixel array												;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;							INITIAL DATA LOCALIZATION							;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	input = [RCX]																;
+;	output = [RDX]																;
+;	parameter = [R8]															;
+;	size = [R9]																	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;									USED REGISTERS								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; RSI - procedure iteration counter (esi)										;
+; RBX - matrix width as counter (ebx)											;
+; R9 - offset in assembler size (offset * matrix_width * size_of_float)			;
+; R8 - pointer to resultant matrix data											;
+; R12 - left array index														;
+; R13 - right matrix index														;
+; R14 - pointer to left matrix data												;
+; R15 - pointer to right matrix data											;
+; R10 - right matrix height as counter (R10d)									;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+posterise PROC 
 
 push	rbp					; save frame pointer
-mov		rbp, rsp			; fix stack pointer
-sub		rsp, 8 * (4 + 2)	; allocate shadow register area + 2 QWORDs for stack alignment
+mov		rbp, rsp			; fix stack pointerrtffffffff
 
-; Get a window handle
+calculate_progVal:
+    ;calculate progging step value
+    mov		r10, rdx	                ;save output to r10
+    movzx	rax, maxByteVal         ;set divisor to 255  
+    mov		rdx, 0
+   
+    div     r8
+    mov		r11, rax                 ;copy value to r9 and r10
+	mov		r12, rax
+	dec		r11
+	shr		r12, 1
 
-call	GetForegroundWindow
-mov		rcx, rax
+	mov		r13, 0
 
-; WINUSERAPI int WINAPI MessageBoxA(
-;  RCX =>  _In_opt_ HWND hWnd,
-;  RDX =>  _In_opt_ LPCSTR lpText,
-;  R8  =>  _In_opt_ LPCSTR lpCaption,
-;  R9  =>  _In_ UINT uType);
+posterize:
+	cmp		r9, 0
+	jle		done
+ 
+fill_vector:
+	vpxor xmm0, xmm0, xmm0
+	vpmovsxwd ymm1, xmm0
 
-mov		rdx, offset hello_msg
-mov		r8, offset info_msg
-mov		r9, 0 ; MB_OK
-and		rsp, not 8 ; align stack to 16 bytes prior to API call
-call	MessageBoxA
 
-; epilog. restore stack pointer
-
-mov		rsp, rbp
-pop		rbp
-ret
-HelloThere ENDP
-
-posterise PROC
-;  Parameters
-;  RCX =>  WORD input array,
-;  RDX =>  WORD output array,
-;  R8  =>  QWORD parameter,
-;  R9  =>  QWORD lenght
-
-push	rbp					; save frame pointer
-mov		rbp, rsp			; fix stack pointer
 
 ; epilog. restore stack pointer
-mov		rsp, rbp
-pop		rbp
-ret
+done:
+	mov		rsp, rbp
+	pop		rbp
+	ret
 
 posterise ENDP
+
+
 
 
 ;-------------------------------------------------------------------------

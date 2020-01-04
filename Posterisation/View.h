@@ -7,6 +7,7 @@ private:
 	sf::Sprite sprite;
 	sf::Texture texture;
 	sf::Image image;
+	float calculateScale(unsigned int, unsigned int);
 public:
 	View();
 	void Display();

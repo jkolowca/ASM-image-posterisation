@@ -6,17 +6,17 @@
 View::View() {
 	window = new sf::RenderWindow(sf::VideoMode(WINDOWWIDTH, WINDOWHEIGTH), "Posterise");
 	window->setFramerateLimit(10);
-	image.create(640, 480, sf::Color::Black);
-	texture.loadFromImage(image);
-	sprite.setTexture(texture);
 }
 
 void View::SetSprite(unsigned int width, unsigned int heigth, unsigned char* pixelArray) {
 	image.create(width, heigth, pixelArray);
 	texture.loadFromImage(image);
-	sprite.setScale(sf::Vector2f(WINDOWWIDTH / (float)width, WINDOWWIDTH / (float)width));
-	sprite.setOrigin({ (float)width / 2, (float)heigth / 2 });
-	sprite.setPosition({ WINDOWWIDTH / 2, WINDOWHEIGTH / 2 });
+
+	float scale = calculateScale(width, heigth);
+	sprite.setTexture(texture);
+	sprite.setScale({scale, scale});
+
+	sprite.setPosition({ ((float)window->getSize().x - ((float)width*scale)) / 2, 0 });
 }
 
 void View::Display() {
@@ -27,4 +27,15 @@ void View::Display() {
 
 sf::RenderWindow* View::getWindow() {
 	return window;
+}
+
+float View::calculateScale(unsigned int width, unsigned int heigth) {
+	float scale;
+	if ((float)width / (float)heigth > (float)window->getSize().x / (float)window->getSize().y) {
+		scale = (float)window->getSize().x / (float)width;
+	}
+	else {
+		scale = (float)window->getSize().y / (float)heigth;
+	}
+	return scale;
 }
