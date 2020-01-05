@@ -1,7 +1,7 @@
 .data
 
 maxByteVal db  255
-wordCounter dq 4
+wordCounter dq 8
 
 .code
 
@@ -62,7 +62,6 @@ calculate_progVal:
 	mov		r12, rax
 	dec		r11
 	shr		r12, 1
-
 	mov		r13, 0
 
 posterize:
@@ -70,22 +69,25 @@ posterize:
 	je		done
  
 fill_vector:
-	vpmovsxwd xmm0, qword ptr [rcx + r13]
+	vpmovsxwd ymm0, xmmword ptr [rcx + r13]
 
 transform:
 	movd xmm1, r12
-	pshufd xmm1, xmm1, 0
-	;VPBROADCASTD zmm1, r9
-	paddd xmm0, xmm1
+	;pshufd xmm1, xmm1, 0
+	vpbroadcastd ymm1, xmm1
+	vpaddd ymm0, ymm1, ymm0
 
 	movd xmm1, r11
-	pshufd xmm1, xmm1, 0
-	vpand xmm2, xmm1, xmm0
-	vpsubd xmm1, xmm0, xmm2
+	;pshufd xmm1, xmm1, 0
+	VPBROADCASTD YMM1, xmm1
+	vpand ymm2, ymm1, ymm0
+	vpsubd ymm1, ymm0, ymm2
 
 save_values:
-	packssdw xmm1, xmm1
+	vpackssdw ymm1, ymm1, ymm1
+	vpermq ymm1, ymm1, 12
 	movq qword ptr [r10 + r13], xmm1
+	;vpmovdw xmmword ptr [r10 + r13], ymm1
 	add r13, wordCounter
 	jmp posterize
 
