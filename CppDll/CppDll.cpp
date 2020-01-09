@@ -13,13 +13,13 @@ void posterise(unsigned char* input, unsigned char* output, unsigned int param, 
 
 	unsigned short out, in, hpar, par;
 	par = 255 / param;
-	if (par == 0) return;
+	if (par == 0) par = 1;
 	hpar = par / 2;
 
 	for (unsigned int i = 0; i < size; i++) {
 		in = *input++;
 		out = (in + hpar) - (in + hpar) % par;
-		if (out > 255) out = 255;
+		//if (out > 255) out = 255;
 		output[i] = (unsigned char)out;
 	}
 }

@@ -98,6 +98,8 @@
       <SubSystem>Console</SubSystem>
       <NoEntryPoint>true</NoEntryPoint>
       <ModuleDefinitionFile>AssemblerDll.def</ModuleDefinitionFile>
+      <LargeAddressAware>
+      </LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,6 +132,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <NoEntryPoint>true</NoEntryPoint>
       <ModuleDefinitionFile>AssemblerDll.def</ModuleDefinitionFile>
+      <LargeAddressAware>
+      </LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
