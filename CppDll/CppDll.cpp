@@ -19,7 +19,7 @@ void posterise(unsigned char* input, unsigned char* output, unsigned int param, 
 	for (unsigned int i = 0; i < size; i++) {
 		in = *input++;
 		out = (in + hpar) - (in + hpar) % par;
-		//if (out > 255) out = 255;
+		if (out > 255) out = 255;
 		output[i] = (unsigned char)out;
 	}
 }

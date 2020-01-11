@@ -4,7 +4,6 @@
 maxByteVal db  255
 wordCounter dq 4
 N dq 512
-bits db 10
 
 
 .code
@@ -65,17 +64,21 @@ calculate_progVal:
     div			r8
     mov			r11, rax
 	mov			r12, rax
+	shr			r8, 1
+	cmp			rdx, r8
+
 	shr			r12, 1               ;copy value to r9 and r10
 	mov			rax, N
 	mov			rdx, 0
 	div			r11
 	mov			r14, rax
 
+
 	movd		xmm0, r11
 	pshufd		xmm0, xmm0, 0
 
 	movd		xmm1, r12
-	pshufd     xmm1, xmm1, 0
+	pshufd		xmm1, xmm1, 0
 
 	movd		xmm5, r14
 	pshufd		xmm5, xmm5, 0
@@ -103,7 +106,7 @@ save_values:
 update_iterator:
 	add			r13, wordCounter
 	cmp			r9, r13
-	jne			posterize
+	jge			posterize
 	
 	
 
